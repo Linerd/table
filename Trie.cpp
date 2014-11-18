@@ -36,8 +36,13 @@ void Trie::insert(int str[], int depth, string pattern, int outport) {
 	}
 
 	if (node.isEnd) {
-		if (node.bfs.find(outport)) {
-
+		map<int,bf::basic_bloom_filter>::iterator bf_it;
+		if (bf_it!=bfs.end()) {
+			bf_it.second.add(pattern);
+			return;
+		}
+		else{
+			bf::basic_bloom_filter bf = new bf::
 		}
 	}
 }
