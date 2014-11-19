@@ -1,14 +1,16 @@
-#include<bf.h>
-#include<map>
+#include <bf/bloom_filter/basic.h>
+#include <map>
 
+using namespace std;
+using namespace bf;
 const int Son_size = 2;
 
 class TrieNode {
 public:
 	bool isEnd;
-	TrieNode* son[];
+	TrieNode** son;
 	int level;
-	std::map<int, bf::basic_bloom_filter> bfs;
+	map<int, basic_bloom_filter> bfs;
 
 	TrieNode(int level);
 };

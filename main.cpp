@@ -5,16 +5,57 @@
  *      Author: yikai
  */
 
-#include <iostream>
-#include <map>
+#include <stddef.h>
+#include <cstdlib>
+#include <fstream>
+#include <string>
 
-using std::map;
-using std::cout;
+#include "Trie.h"
 
-int main() {
-	map<int, int> map;
-	map.insert(std::make_pair(1, 1));
-	cout << (map.find(1) != map.end()) << " " << (map.find(2) != map.end());
+using namespace std;
+void split(string& s, string& delim, string str[], int& outport) {
+	size_t last = 0;
+	size_t index = s.find_first_of(delim, last);
+	int count = 0;
+	while (index != string::npos) {
+		str[count++] = s.substr(last, index - last);
+		last = index + 1;
+		index = s.find_first_of(delim, last);
+	}
+	outport = atoi(s.substr(last, index - last).c_str());
+}
+int main(int argc, char *argv[]) {
+	ifstream table("table.txt");
+
+	Trie* trie = new Trie();
+	string entry;
+	string reg = "|";
+	while (!table.eof()) {
+		getline(table, entry);
+		string* str = new string[6];
+		int outport;
+		split(entry, reg, str, outport);
+		int* mask = new int[6];
+		string pattern = "";
+		int mark = 0;
+		for (int i = 0; i < 6; i++) {
+			if (str[i].length() > 0) {
+				mask[i] = 1;
+				mark = i;
+				pattern += str[i];
+			}
+		}
+		trie->insert(mask, mark, pattern, outport);
+	}
+
+	table.close();
+
+	ifstream packet("packet.txt");
+	ofstream output("output.txt");
+	while (!packet.eof()) {
+		getline(packet, entry);
+		string* str = new string[6];
+		output << trie->match(trie->getRoot(), str, new string(""));
+	}
 	return 0;
 }
-

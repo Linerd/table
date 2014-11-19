@@ -1,16 +1,18 @@
-#include<string>
+#include <string>
 
-using std::string;
+#include "TrieNode.h"
+
+using namespace std;
 
 class Trie {
 public:
-	const TrieNode& getRoot() const;
+	TrieNode* getRoot();
 	Trie();
 	void insert(int str[], int depth, string pattern, int outport);
-	int match(TrieNode node, string str[], string pattern);
+	int match(TrieNode* node, string str[], string* pattern);
 
 private:
-	TrieNode root;
+	TrieNode* root;
 
 };
 
