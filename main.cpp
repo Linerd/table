@@ -1,12 +1,11 @@
-#include <stddef.h>
 #include <cstdlib>
 #include <fstream>
 #include <string>
-
+#include <iostream>
 #include "Trie.h"
 
 using namespace std;
-void split(string& s, string& delim, string str[], int& outport)
+inline void split(string& s, string& delim, string str[], int& outport)
 {
     size_t last = 0;
     size_t index = s.find_first_of(delim, last);
@@ -19,15 +18,18 @@ void split(string& s, string& delim, string str[], int& outport)
     }
     outport = atoi(s.substr(last, index - last).c_str());
 }
+
 int main(int argc, char *argv[])
 {
-    ifstream table("table.txt");
+    ifstream table("./table.txt");
 
     Trie* trie = new Trie();
     string entry;
     string reg = "|";
+    int count = 0;
     while (!table.eof())
     {
+        count++;
         getline(table, entry);
         string* str = new string[6];
         int outport;
@@ -44,18 +46,20 @@ int main(int argc, char *argv[])
                 pattern += str[i];
             }
         }
+
         trie->insert(mask, mark, pattern, outport);
+        cin.get();
     }
 
     table.close();
-
-    ifstream packet("packet.txt");
-    ofstream output("output.txt");
-    while (!packet.eof())
-    {
-        getline(packet, entry);
-        string* str = new string[6];
-        output << trie->match(trie->getRoot(), str, new string(""));
-    }
+//
+//    ifstream packet("packet.txt");
+//    ofstream output("output.txt");
+//    while (!packet.eof())
+//    {
+//        getline(packet, entry);
+//        string* str = new string[6];
+//        output << trie->match(trie->getRoot(), str, new string(""));
+//    }
     return 0;
 }
