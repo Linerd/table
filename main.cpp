@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
     string entry;
     string reg = "|";
     int count = 0;
-    while (!table.eof())
+    while (!table.eof()&&count<10)
     {
         count++;
         getline(table, entry);
@@ -44,11 +44,13 @@ int main(int argc, char *argv[])
                 mask[i] = 1;
                 mark = i;
                 pattern += str[i];
+		cout<<str[i];
             }
         }
-
-        trie->insert(mask, mark, pattern, outport);
-        cin.get();
+        cout<<trie->insert(mask, mark, pattern, outport);
+	cin.get();
+	delete mask;
+	delete str;
     }
 
     table.close();

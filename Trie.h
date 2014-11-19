@@ -9,7 +9,7 @@ class Trie
 public:
     TrieNode* getRoot();
     Trie();
-    void insert(int str[], int depth, string pattern, int outport);
+    bool insert(int str[], int depth, string pattern, int outport);
     int match(TrieNode* node, string str[], string* pattern);
 
 private:
