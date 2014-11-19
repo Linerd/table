@@ -5,12 +5,13 @@ using namespace std;
 using namespace bf;
 const int Son_size = 2;
 
-class TrieNode {
+class TrieNode
+{
 public:
-	bool isEnd;
-	TrieNode** son;
-	int level;
-	map<int, basic_bloom_filter> bfs;
+    bool isEnd;
+    TrieNode** son;
+    int level;
+    map<int, bloom_filter*> bfs;
 
-	TrieNode(int level);
+    TrieNode(int level);
 };

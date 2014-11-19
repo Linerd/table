@@ -1,1 +1,7 @@
 *~
+/bin
+*.swp
+/obj
+/.objs
+*.cbp
+*.depend
