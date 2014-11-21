@@ -3,65 +3,115 @@
 #include <string>
 #include <iostream>
 #include "Trie.h"
+#include <cstring>
 
 using namespace std;
-inline void split(string& s, string& delim, string str[], int& outport)
+int readEntry(char entry[25],int mask[6], ifstream& ifs, short* outport)
 {
-    size_t last = 0;
-    size_t index = s.find_first_of(delim, last);
-    int count = 0;
-    while (index != string::npos)
-    {
-        str[count++] = s.substr(last, index - last);
-        last = index + 1;
-        index = s.find_first_of(delim, last);
-    }
-    outport = atoi(s.substr(last, index - last).c_str());
-}
+	ifs.read(entry,24);
+	ifs.read((char*)(outport),sizeof( short));
 
-int main(int argc, char *argv[])
+	short boo;
+	ifs.read((char*)(&boo),sizeof boo);//read the 0x0d0a
+
+	int mark=0;
+
+	if(((int)(*entry)<<16)+(short)(*(entry+4)))
+	{
+		mask[0]=1;
+		mark = 0;
+	}
+	if(((int)(*(entry+6))<<16)+(short)(*(entry+10)))
+	{
+		mask[1]=1;
+		mark = 1;
+	}
+	if((int)(*(entry+12)))
+	{
+		mask[2]=1;
+		mark = 2;
+	}
+	if((int)(*(entry+16)))
+	{
+		mask[3]=1;
+		mark = 3;
+	}
+	if((short)(*(entry+20)))
+	{
+		mask[4]=1;
+		mark =4;
+	}
+	if((short)(*(entry+22)))
+	{
+		mask[5]=1;	
+		mark =5;
+	}
+	entry[24]='\0';
+	return mark;
+}	
+
+int main(int argc, char **argv)
 {
-    ifstream table("./table.txt");
+	ifstream table("table.dat");
 
-    Trie* trie = new Trie();
-    string entry;
-    string reg = "|";
-    int count = 0;
-    while (!table.eof()&&count<10)
-    {
-        count++;
-        getline(table, entry);
-        string* str = new string[6];
-        int outport;
-        split(entry, reg, str, outport);
-        int* mask = new int[6];
-        string pattern = "";
-        int mark = 0;
-        for (int i = 0; i < 6; i++)
-        {
-            if (str[i].length() > 0)
-            {
-                mask[i] = 1;
-                mark = i;
-                pattern += str[i];
-		cout<<str[i];
-            }
-        }
-        cout<<trie->insert(mask, mark, pattern, outport);
-	cin.get();
-	delete mask;
-	delete str;
-    }
+	Trie* trie = new Trie();
+//	int count = 0;
+	int mask[6];
+	char entry[25];
+	int mark = 0;
+	short outport;
+//	while (!table.eof()&&count<10)
+	while(!table.eof())
+	{
+		//count++;
+		memset(mask,0,6);
+		mark =readEntry(entry,mask,table,&outport);
 
-    table.close();
-//
-//    ifstream packet("packet.txt");
-//    ofstream output("output.txt");
-//    while (!packet.eof())
-//    {
-//        getline(packet, entry);
-//        string* str = new string[6];
-//        output << trie->match(trie->getRoot(), str, new string(""));
-//    }
-    return 0;
+		cout<<trie->insert(mask, mark, entry, outport);
+		//if(!trie->insert(mask,mark,entry,outport))
+		//	cout<<"failed insertion"<<endl;
+		cin.get();
+	}
+
+	table.close();
+
+	ifstream packet("packet.dat");
+	ofstream output("output.txt");
+	char packetEntry[25];
+	int count=0;
+	while (!packet.eof())
+	{
+		packet.read((char*)(packetEntry),24);
+		short boo;
+		packet.read((char*)(&boo),sizeof boo);
+		
+		packetEntry[24] = '\0';
+		char pattern[25]={0};
+		pattern[24]='\0';
+		output << trie->match(trie->getRoot(), pattern, packetEntry)<<endl;
+		count++;
+	}
+	cout<<count<<endl;
+	packet.close();
+	output.close();
+	
+//	ifstream out("output.txt");
+//	ifstream port("outport.dat");
+//	while(!output.eof())
+//	{
+//		int a;
+//		int b;
+//		short boo;
+//		out>>a;
+//		port.read((char*)(&b),sizeof b);
+//		port.read((char*)(&boo),sizeof boo);
+//		
+//		if(a!=b)
+//		{
+//			cout<<"boo!"<<endl;
+//		}
+//	}	
+//	output.close();
+//	port.close();
+	return 0;
 }

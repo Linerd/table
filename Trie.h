@@ -6,14 +6,14 @@ using namespace std;
 
 class Trie
 {
-public:
-    TrieNode* getRoot();
-    Trie();
-    bool insert(int str[], int depth, string pattern, int outport);
-    int match(TrieNode* node, string str[], string* pattern);
+	public:
+		TrieNode* getRoot();
+		Trie();
+		bool insert(int str[], int depth, char pattern[25], short outport);
+		int match(TrieNode* node, char pattern[25],char entry[25]);
 
-private:
-    TrieNode* root;
+	private:
+		TrieNode* root;
 
 };
 
